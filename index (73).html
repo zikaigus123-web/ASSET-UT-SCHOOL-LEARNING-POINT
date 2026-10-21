@@ -1,0 +1,145 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UT School • Infrastructure Standardization</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<style>
+:root{--ut:#FDB913;--ut-d:#E5A100;--ink:#1B1B1B;--ink2:#2A2A2A;--bg:#F4F4F1;--card:#fff;--line:#E6E6E0;--mut:#6B6B66;--ok:#2E9E5B;--bad:#D64545;--warn:#E58A00}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}button,input,select{font:inherit}
+.btn{border:0;border-radius:10px;padding:.6rem 1rem;font-weight:700;cursor:pointer;display:inline-flex;gap:.4rem;align-items:center;justify-content:center}
+.pri{background:var(--ut);color:var(--ink)}.pri:hover{background:var(--ut-d)}.gh{background:#fff;border:1px solid var(--line)}
+.inp{width:100%;padding:.7rem .85rem;border:1px solid var(--line);border-radius:10px;background:#fff;min-height:42px}.inp:focus{outline:3px solid #fdb91340;border-color:var(--ut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+/* login */
+.login{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}.hero{background:var(--ink);color:#fff;padding:56px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:var(--ut);opacity:.95}.hero:after{content:"";position:absolute;right:60px;bottom:-160px;width:300px;height:300px;border-radius:50%;border:40px solid #ffffff10}
+.hero>*{position:relative;z-index:1}.logo{display:flex;align-items:center;gap:12px;font-weight:800}.mark{width:42px;height:42px;border-radius:12px;background:var(--ut);color:var(--ink);display:grid;place-items:center;font-weight:800}
+.hero h1{font-size:44px;line-height:1.1;margin:0 0 14px;max-width:460px}.hero h1 span{color:var(--ut)}.hero p{color:#bdbdb6;max-width:420px}
+.stats{display:flex;gap:32px}.stats b{display:block;font-size:26px;color:var(--ut)}.stats small{color:#9a9a93}
+.lform{display:flex;align-items:center;justify-content:center;padding:32px}.lform form{width:100%;max-width:400px}
+.err{background:#fdecec;color:#a52a2a;padding:.7rem;border-radius:10px;font-size:.85rem;font-weight:600;margin-top:12px}
+/* shell */
+.app{display:flex;min-height:100vh}.side{width:256px;background:var(--ink);color:#d8d8d2;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;z-index:40;transition:transform .2s}
+.side .logo{padding:22px 20px;color:#fff;border-bottom:1px solid #ffffff14}.side nav{padding:14px 12px;flex:1}
+.nav{display:flex;gap:12px;align-items:center;width:100%;background:none;border:0;color:inherit;padding:.75rem .9rem;border-radius:10px;cursor:pointer;font-weight:600;position:relative;margin-bottom:2px}
+.nav:hover{background:#ffffff10}.nav.on{background:#ffffff14;color:var(--ut)}.nav.on:before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:var(--ut)}.nav i{font-size:20px}
+.user{padding:16px;border-top:1px solid #ffffff14;display:flex;gap:10px;align-items:center}.av{width:36px;height:36px;border-radius:50%;background:var(--ut);color:var(--ink);display:grid;place-items:center;font-weight:800}
+.main{flex:1;margin-left:256px;min-width:0}.top{position:sticky;top:0;background:#f4f4f1e6;backdrop-filter:blur(10px);padding:14px 28px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);z-index:30}
+.top h2{margin:0;font-size:18px}.content{padding:24px 28px 48px}.burger{display:none}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:99px;font-size:.72rem;font-weight:700}
+.b-y{background:#fff3cf;color:#8a6200}.b-g{background:#e2f5ea;color:#1c7a45}.b-r{background:#fdecec;color:#a52a2a}.b-n{background:#eee;color:#555}.b-o{background:#ffeccc;color:#9a5a00}
+.kpis{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}.kpi{position:relative;overflow:hidden}.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--ut)}
+.kpi small{color:var(--mut);font-weight:600}.kpi b{display:block;font-size:30px;margin-top:6px}.kpi span{font-size:.78rem;color:var(--mut)}
+.grid2{display:grid;gap:16px;grid-template-columns:2fr 1fr;margin-top:16px}.grid3{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin-top:16px}
+.cv{position:relative;height:300px}h3{margin:0 0 12px;font-size:15px}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}table{width:100%;border-collapse:collapse;font-size:.83rem}
+th{background:#FAFAF7;text-align:left;padding:.7rem;font-size:.7rem;text-transform:uppercase;color:var(--mut);position:sticky;top:0;white-space:nowrap}td{padding:.65rem .7rem;border-top:1px solid var(--line)}tr.cl{cursor:pointer}tr.cl:hover td{background:#fffbea}
+.bar{height:8px;background:#eee;border-radius:9px;overflow:hidden;min-width:70px}.bar i{display:block;height:100%;background:var(--ut);border-radius:9px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.filters>*{flex:1;min-width:150px}.pg{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:.85rem;color:var(--mut)}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:min(480px,100vw);background:#fff;z-index:60;padding:24px;overflow:auto;box-shadow:-20px 0 50px #0003}.ov{position:fixed;inset:0;background:#0006;z-index:55}
+.note{background:#fff8e1;border:1px solid #ffe08a;border-radius:12px;padding:12px 14px;font-size:.85rem;margin-bottom:16px}.empty{padding:40px;text-align:center;color:var(--mut)}
+@media(max-width:900px){.login{grid-template-columns:1fr}.hero{display:none}.side{transform:translateX(-100%)}.side.open{transform:none}.main{margin-left:0}.burger{display:inline-flex}.grid2,.grid3{grid-template-columns:1fr}.content{padding:16px}}
+</style></head><body><div id="root"></div>
+<script>
+// ===== CONFIG: isi dengan project Supabase Anda (Settings > API). Kosongkan = mode DEMO =====
+const SUPABASE_URL='', SUPABASE_ANON_KEY='';
+// ==========================================================================================
+const LP=[["PKB","Pekanbaru","Sumatra","B",73,67,91.8,5,6.8,62,0,1,24],["MDN","Medan","Sumatra","B",73,44,60.3,10,13.7,38,4,0,45],["PLB","Palembang","Sumatra","B",73,66,90.4,4,5.5,62,0,0,21],["TJE","Tanjung Enim","Sumatra","B",73,64,87.7,10,13.7,55,1,0,57],["BLG","Lampung","Sumatra","B",73,27,37.0,13,17.8,19,5,7,66],["JKT","Jakarta","Jawa","A",89,73,82.0,17,19.1,56,0,16,520],["SMG","Semarang","Jawa","A",89,71,79.8,15,16.9,58,2,0,108],["SBY","Surabaya","Jawa","B",73,66,90.4,24,32.9,42,0,0,319],["BJM","Banjarmasin","Kalimantan","A",89,70,78.7,15,16.9,56,1,1,59],["ADR","Tanjung","Kalimantan","B",73,67,91.8,21,28.8,46,0,0,81],["BKJ","Batukajang","Kalimantan","B",73,66,90.4,7,9.6,59,0,0,25],["SMD","Samarinda","Kalimantan","A",89,71,79.8,8,9.0,63,0,0,52],["BLP","Balikpapan","Kalimantan","B",73,65,89.0,6,8.2,59,0,0,33],["SGT","Sangata","Kalimantan","B",73,51,69.9,9,12.3,42,0,1,43],["STI","Satui","Kalimantan","B",73,31,42.5,6,8.2,26,1,0,51],["MLW","Muaralawa","Kalimantan","B",73,31,42.5,0,0.0,31,0,0,0],["TJR","Tanjung Redeb","Kalimantan","B",73,51,69.9,4,5.5,47,0,0,39],["UPG","Ujungpandang","Sulawesi","A",89,52,58.4,6,6.7,46,0,2,93],["MND","Manado","Sulawesi","B",73,28,38.4,6,8.2,23,1,1,25],["KLK","Kolaka","Sulawesi","C",14,13,92.9,1,7.1,12,0,0,25],["SRG","Sorong","Papua","B",73,16,21.9,14,19.2,11,9,0,40],["JYP","Jayapura","Papua","B",73,15,20.5,8,11.0,10,3,0,31],["TMK","Timika","Papua","B",73,15,20.5,10,13.7,8,3,0,33],["MRK","Merauke","Papua","C",14,12,85.7,0,0.0,12,0,0,0],["MTR","Mataram","NTB","C",14,12,85.7,5,35.7,7,0,0,67],["SBW","Sumbawa","NTB","C",14,12,85.7,3,21.4,9,0,0,19]].map(r=>({code:r[0],name:r[1],region:r[2],class:r[3],req:r[4],mp:r[5],rm:r[6],rp:r[7],rr:r[8],miss:r[9],extra:r[10],dmg:r[11],tot:r[12]}));
+const DEMO={cond:[['Baik Terpakai',1348],['Belum ada History',504],['Baik Tidak Terpakai',35],['Rusak Terpakai',18],['Rusak Tidak Terpakai',8],['Rusak',3]],
+cat:[['Classroom & Digital Learning',857],['Non-Standard / Not in Standard',711],['Perlu Review',102],['Komponen',65],['Cutway Component',65],['Simulator',45],['Workshop, Tools & Equipment',27],['Measuring tools',24],['Common Tool',14],['Unit Alat Berat',6]],n:1916,val:12810138639};
+const demo=!SUPABASE_URL, sb=demo?null:supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf=n=>Number(n||0).toLocaleString('id-ID'), rp=n=>n>=1e9?'Rp '+(n/1e9).toLocaleString('id-ID',{maximumFractionDigits:2})+' M':'Rp '+(n/1e6).toLocaleString('id-ID',{maximumFractionDigits:1})+' jt';
+const st={user:null,view:'dashboard',cls:'',charts:[],pg:{}};
+const NAV=[['dashboard','Dashboard','ph-squares-four'],['lp','Learning Point','ph-map-pin'],['assets','Aset Register','ph-package'],['gap','Gap Standar','ph-chart-bar-horizontal']];
+const ttl=Object.fromEntries(NAV.map(n=>[n[0],n[1]]));
+const rcls=v=>v>=80?'b-g':v>=40?'b-y':'b-r', condB=c=>/^Rusak/.test(c)?'b-r':c==='Belum ada History'?'b-n':'b-g';
+
+function login(err=''){$('#root').innerHTML=`<div class="login"><section class="hero"><div class="logo"><div class="mark">UT</div><div>UT SCHOOL<br><small style="color:#9a9a93;font-weight:500">Infrastructure Standardization</small></div></div>
+<div><h1>Pantau standar <span>infrastruktur</span> Learning Point.</h1><p>Satu tempat untuk melihat kesiapan, kondisi aset, dan gap standar di seluruh Learning Point UT School.</p></div>
+<div class="stats"><div><b>26</b><small>Learning Point</small></div><div><b>1.916</b><small>Aset terdata</small></div><div><b>3</b><small>Kelas A/B/C</small></div></div></section>
+<section class="lform"><form id="lf"><div class="mark" style="margin-bottom:18px">UT</div><h2 style="margin:0;font-size:28px">Masuk</h2><p style="color:var(--mut);margin:6px 0 22px">Gunakan akun yang diberikan administrator.</p>
+${demo?'<div class="note">Mode DEMO: Supabase belum dikonfigurasi. Klik Masuk dengan isian apa saja.</div>':''}
+<label style="font-weight:600;font-size:.85rem">Email<input id="em" type="email" class="inp" style="margin:4px 0 14px" ${demo?'':'required'} autocomplete="username"></label>
+<label style="font-weight:600;font-size:.85rem">Password<input id="pw" type="password" class="inp" style="margin-top:4px" ${demo?'':'required'} autocomplete="current-password"></label>
+${err?`<div class="err">${esc(err)}</div>`:''}<button class="btn pri" style="width:100%;margin-top:20px" id="lb">Masuk <i class="ph ph-arrow-right"></i></button></form></section></div>`;
+$('#lf').onsubmit=async e=>{e.preventDefault();const b=$('#lb');b.disabled=true;
+if(demo){st.user={name:'Demo User',role:'admin'};return start()}
+const {error}=await sb.auth.signInWithPassword({email:$('#em').value.trim(),password:$('#pw').value});
+if(error){return login('Email atau password salah.')}await boot()}}
+
+async function boot(){if(demo)return login();const {data:{session}}=await sb.auth.getSession();if(!session)return login();
+const {data:p}=await sb.from('profiles').select('full_name,role').eq('id',session.user.id).single();
+st.user={name:p?.full_name||session.user.email,role:p?.role||'viewer'};start()}
+function start(){shell();go(location.hash.slice(1)||'dashboard')}
+function shell(){const u=st.user;$('#root').innerHTML=`<div class="app"><aside class="side" id="side"><div class="logo"><div class="mark">UT</div><div>UT SCHOOL<br><small style="color:#9a9a93;font-weight:500">Infra Standard</small></div></div>
+<nav>${NAV.map(n=>`<button class="nav" data-v="${n[0]}"><i class="ph ${n[2]}"></i>${n[1]}</button>`).join('')}</nav>
+<div class="user"><div class="av">${esc(u.name[0].toUpperCase())}</div><div style="flex:1;min-width:0"><div style="font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.name)}</div><small style="text-transform:capitalize">${esc(u.role)}</small></div><button class="btn" id="lo" title="Keluar" style="background:#ffffff14;color:#fff;padding:.5rem"><i class="ph ph-sign-out"></i></button></div></aside>
+<div class="main"><header class="top"><button class="btn gh burger" id="bg"><i class="ph ph-list"></i></button><h2 id="ht"></h2><span style="flex:1"></span>${demo?'<span class="badge b-o">DEMO</span>':'<span class="badge b-g">Supabase</span>'}</header><div class="content" id="ct"></div></div></div><div id="dr"></div>`;
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>go(b.dataset.v));$('#bg').onclick=()=>$('#side').classList.toggle('open');
+$('#lo').onclick=async()=>{if(!demo)await sb.auth.signOut();st.user=null;login()}}
+async function go(v){if(!ttl[v])v='dashboard';st.view=v;location.hash=v;$('#side').classList.remove('open');
+document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('#ht').textContent=ttl[v];
+st.charts.forEach(c=>c.destroy());st.charts=[];$('#ct').innerHTML='<div class="empty">Memuat…</div>';
+try{await({dashboard:dash,lp:lpView,assets:()=>pager('assets'),gap:()=>pager('gap')}[v])()}catch(e){$('#ct').innerHTML=`<div class="card empty">Gagal memuat data: ${esc(e.message||e)}<br><small>Pastikan 01_schema.sql dan 02_seed_data.sql sudah dijalankan.</small></div>`}}
+
+async function getLP(){if(demo)return LP;const {data,error}=await sb.from('learning_points').select('*').order('name');if(error)throw error;
+return data.map(r=>({code:r.code,name:r.name,region:r.region,class:r.class,req:r.required_items,mp:r.matrix_present,rm:+r.readiness_manual,rp:r.register_present,rr:+r.readiness_register,miss:r.matrix_missing_in_register,extra:r.register_not_in_matrix,dmg:r.damaged_assets,tot:r.total_assets}))}
+function chart(id,cfg){st.charts.push(new Chart($(id),cfg))}
+const PAL=['#FDB913','#1B1B1B','#8A8A84','#E58A00','#D64545','#2E9E5B','#B8B8B0','#F2D27A','#4A4A46','#C99200'];
+async function dash(){let lps=await getLP();if(st.cls)lps=lps.filter(l=>l.class===st.cls);
+let cond,cat,n,val;if(demo){({cond,cat,n,val}=DEMO)}else{const [a,b,c]=await Promise.all([sb.from('v_condition_stats').select('*'),sb.from('v_category_stats').select('*'),sb.from('v_asset_totals').select('*').single()]);
+cond=a.data.map(x=>[x.condition,x.n]).sort((x,y)=>y[1]-x[1]);cat=b.data.map(x=>[x.category,x.n]).sort((x,y)=>y[1]-x[1]);n=c.data.n;val=+c.data.total_value}
+const avg=k=>lps.length?lps.reduce((s,l)=>s+l[k],0)/lps.length:0, dmg=lps.reduce((s,l)=>s+l.dmg,0), low=[...lps].sort((a,b)=>a.rm-b.rm).slice(0,5);
+$('#ct').innerHTML=`<div class="filters" style="max-width:260px"><select class="inp" id="fc"><option value="">Semua kelas</option><option ${st.cls==='A'?'selected':''} value="A">Kelas A</option><option ${st.cls==='B'?'selected':''} value="B">Kelas B</option><option ${st.cls==='C'?'selected':''} value="C">Kelas C</option></select></div>
+<div class="kpis"><div class="card kpi"><small>Learning Point</small><b>${lps.length}</b><span>${['A','B','C'].map(k=>k+': '+lps.filter(l=>l.class===k).length).join(' · ')}</span></div>
+<div class="card kpi"><small>Rata-rata kesiapan (matrix)</small><b>${avg('rm').toFixed(1)}%</b><span>Hasil assessment manual</span></div>
+<div class="card kpi"><small>Rata-rata kesiapan (register)</small><b>${avg('rr').toFixed(1)}%</b><span>Berdasarkan aset terdaftar</span></div>
+<div class="card kpi"><small>Total aset</small><b>${nf(n)}</b><span>Nilai ${rp(val)}</span></div>
+<div class="card kpi"><small>Aset perlu perbaikan</small><b style="color:var(--bad)">${nf(dmg)}</b><span>Flag "Perlu perbaikan"</span></div></div>
+<div class="grid2"><div class="card"><h3>Kesiapan per Learning Point (%)</h3><div class="cv"><canvas id="c1"></canvas></div></div><div class="card"><h3>Kondisi aset</h3><div class="cv"><canvas id="c2"></canvas></div></div></div>
+<div class="grid3"><div class="card"><h3>Aset per kategori</h3><div class="cv"><canvas id="c3"></canvas></div></div>
+<div class="card"><h3>5 LP dengan kesiapan terendah</h3>${low.map(l=>`<div style="margin:14px 0"><div style="display:flex;justify-content:space-between;font-size:.85rem"><b>${esc(l.name)} <span class="badge b-n">Kelas ${l.class}</span></b><span>${l.rm}%</span></div><div class="bar" style="margin-top:6px"><i style="width:${l.rm}%;background:var(--bad)"></i></div></div>`).join('')}</div></div>`;
+$('#fc').onchange=e=>{st.cls=e.target.value;go('dashboard')};
+const ax={grid:{color:'#eee'}};
+chart('#c1',{type:'bar',data:{labels:lps.map(l=>l.code),datasets:[{label:'Matrix manual',data:lps.map(l=>l.rm),backgroundColor:'#FDB913',borderRadius:4},{label:'Register aktual',data:lps.map(l=>l.rr),backgroundColor:'#1B1B1B',borderRadius:4}]},options:{maintainAspectRatio:false,scales:{y:{max:100,...ax},x:{grid:{display:false}}},plugins:{legend:{position:'bottom'}}}});
+chart('#c2',{type:'doughnut',data:{labels:cond.map(c=>c[0]),datasets:[{data:cond.map(c=>c[1]),backgroundColor:['#FDB913','#B8B8B0','#2E9E5B','#E58A00','#D64545','#1B1B1B'],borderWidth:2}]},options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:10}}}}});
+chart('#c3',{type:'bar',data:{labels:cat.map(c=>c[0]),datasets:[{data:cat.map(c=>c[1]),backgroundColor:cat.map((c,i)=>PAL[i%PAL.length]),borderRadius:4}]},options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:ax,y:{grid:{display:false},ticks:{font:{size:10}}}}}});}
+
+async function lpView(){const all=await getLP();const f={q:'',c:'',r:''};
+const regs=[...new Set(all.map(l=>l.region))];
+$('#ct').innerHTML=`<div class="filters"><input class="inp" id="q" placeholder="Cari Learning Point…"><select class="inp" id="c"><option value="">Semua kelas</option><option>A</option><option>B</option><option>C</option></select><select class="inp" id="r"><option value="">Semua region</option>${regs.map(r=>`<option>${esc(r)}</option>`).join('')}</select></div><div class="tw"><table><thead><tr><th>Learning Point</th><th>Region</th><th>Kelas</th><th>Item wajib</th><th>Kesiapan matrix</th><th>Kesiapan register</th><th>Aset</th><th>Rusak</th></tr></thead><tbody id="tb"></tbody></table></div>`;
+const draw=()=>{const rows=all.filter(l=>l.name.toLowerCase().includes(f.q)&&(!f.c||l.class===f.c)&&(!f.r||l.region===f.r));
+$('#tb').innerHTML=rows.map(l=>`<tr class="cl" data-c="${l.code}"><td><b>${esc(l.name)}</b> <small style="color:var(--mut)">${l.code}</small></td><td>${esc(l.region)}</td><td><span class="badge b-y">Kelas ${l.class}</span></td><td>${l.req}</td><td><span class="badge ${rcls(l.rm)}">${l.rm}%</span></td><td><span class="badge ${rcls(l.rr)}">${l.rr}%</span></td><td>${nf(l.tot)}</td><td>${l.dmg?`<span class="badge b-r">${l.dmg}</span>`:'–'}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">Tidak ada data.</td></tr>';
+document.querySelectorAll('#tb tr.cl').forEach(t=>t.onclick=()=>detail(all.find(l=>l.code===t.dataset.c)))};
+$('#q').oninput=e=>{f.q=e.target.value.toLowerCase();draw()};$('#c').onchange=e=>{f.c=e.target.value;draw()};$('#r').onchange=e=>{f.r=e.target.value;draw()};draw()}
+function detail(l){const m=(a,v,c)=>`<div style="margin:16px 0"><div style="display:flex;justify-content:space-between;font-size:.85rem"><span>${a}</span><b>${v}%</b></div><div class="bar" style="margin-top:6px"><i style="width:${v}%;background:${c}"></i></div></div>`;
+$('#dr').innerHTML=`<div class="ov" id="ov"></div><aside class="drawer"><div style="display:flex;justify-content:space-between"><div><span class="badge b-y">Kelas ${l.class} · ${esc(l.region)}</span><h2 style="margin:8px 0 0">${esc(l.name)}</h2><small style="color:var(--mut)">${l.code}</small></div><button class="btn gh" id="x"><i class="ph ph-x"></i></button></div>
+${m('Kesiapan matrix manual',l.rm,'var(--ut)')}${m('Kesiapan register aktual',l.rr,'var(--ink)')}
+<div class="kpis" style="grid-template-columns:1fr 1fr;margin-top:8px">${[['Item wajib',l.req],['Ada (matrix)',l.mp],['Ada (register)',l.rp],['Total aset',nf(l.tot)],['Matrix ada, aset tidak ada',l.miss],['Aset di luar matrix',l.extra],['Aset rusak',l.dmg]].map(x=>`<div class="card" style="padding:12px"><small style="color:var(--mut)">${x[0]}</small><b style="display:block;font-size:22px">${x[1]}</b></div>`).join('')}</div>
+<button class="btn pri" style="width:100%;margin-top:20px" id="g">Lihat gap standar LP ini</button></aside>`;
+const cl=()=>$('#dr').innerHTML='';$('#ov').onclick=cl;$('#x').onclick=cl;$('#g').onclick=()=>{cl();st.pg.gap={page:0,q:'',f:{lp_code:l.code}};go('gap')}}
+
+// ===== halaman tabel dengan paginasi server-side =====
+const PG={assets:{table:'assets',order:'acquired_date',asc:false,
+ cols:[['Kode Aset','asset_code'],['Nama Aset','asset_name'],['Area','area'],['Kategori','category',v=>v||'Perlu Review'],['Kondisi','condition',v=>`<span class="badge ${condB(v)}">${esc(v)}</span>`,1],['Tanggal','acquired_date'],['Nilai','value',v=>rp(+v),1]],
+ search:'asset_name',filt:[['lp_code','LP'],['condition','Kondisi'],['category','Kategori']]},
+ gap:{table:'gap_items',order:'lp_code',asc:true,
+ cols:[['LP','lp_code'],['Kategori','category'],['Item','item'],['Wajib','required'],['Matrix','matrix_flag'],['Unit register','units_register'],['Unit baik','units_good'],['Rusak','units_damaged'],['Status','status',v=>`<span class="badge ${/Aset Ada/.test(v)?'b-g':/Matrix Ada/.test(v)?'b-o':/Tidak Ada, Aset Ada/.test(v)?'b-y':'b-n'}">${esc(v)}</span>`,1]],
+ search:'item',filt:[['lp_code','LP'],['status','Status'],['category','Kategori']]}};
+const DISTINCT={};async function opts(t,c){const k=t+c;if(!DISTINCT[k]){const {data}=await sb.from(t).select(c).limit(5000);DISTINCT[k]=[...new Set(data.map(x=>x[c]).filter(Boolean))].sort()}return DISTINCT[k]}
+async function pager(key){const P=PG[key],s=st.pg[key]=st.pg[key]||{page:0,q:'',f:{}};const SZ=25;
+if(demo){$('#ct').innerHTML='<div class="card empty"><i class="ph ph-plugs" style="font-size:40px;color:var(--ut-d)"></i><h3 style="margin-top:10px">Halaman ini membutuhkan Supabase</h3>Isi SUPABASE_URL dan SUPABASE_ANON_KEY di index.html, lalu jalankan file SQL di folder <b>supabase/</b>.</div>';return}
+const os=await Promise.all(P.filt.map(f=>opts(P.table,f[0])));
+let q=sb.from(P.table).select('*',{count:'exact'}).order(P.order,{ascending:P.asc}).range(s.page*SZ,s.page*SZ+SZ-1);
+if(s.q)q=q.ilike(P.search,'%'+s.q.replace(/[%,]/g,'')+'%');Object.entries(s.f).forEach(([k,v])=>v&&(q=q.eq(k,v)));
+const {data,count,error}=await q;if(error)throw error;const pages=Math.max(1,Math.ceil(count/SZ));
+$('#ct').innerHTML=`<div class="filters"><input class="inp" id="q" placeholder="Cari…" value="${esc(s.q)}" style="flex:2">${P.filt.map((f,i)=>`<select class="inp" data-f="${f[0]}"><option value="">${f[1]}: semua</option>${os[i].map(o=>`<option ${s.f[f[0]]===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`).join('')}</div>
+<div class="tw"><table><thead><tr>${P.cols.map(c=>`<th>${c[0]}</th>`).join('')}</tr></thead><tbody>${data.map(r=>`<tr>${P.cols.map(c=>`<td>${c[2]?c[2](r[c[1]]):esc(r[c[1]]??'–')}</td>`).join('')}</tr>`).join('')||`<tr><td colspan="${P.cols.length}" class="empty">Tidak ada data.</td></tr>`}</tbody></table></div>
+<div class="pg"><span>${nf(count)} baris · halaman ${s.page+1}/${pages}</span><span><button class="btn gh" id="pv" ${s.page?'':'disabled'}><i class="ph ph-caret-left"></i></button> <button class="btn gh" id="nx" ${s.page+1>=pages?'disabled':''}><i class="ph ph-caret-right"></i></button></span></div>`;
+let t;$('#q').oninput=e=>{clearTimeout(t);t=setTimeout(()=>{s.q=e.target.value;s.page=0;go(st.view)},400)};
+document.querySelectorAll('select[data-f]').forEach(e=>e.onchange=()=>{s.f[e.dataset.f]=e.value;s.page=0;go(st.view)});
+$('#pv').onclick=()=>{s.page--;go(st.view)};$('#nx').onclick=()=>{s.page++;go(st.view)}}
+if(!demo)sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT'&&st.user){st.user=null;login()}});
+boot();
+</script></body></html>
