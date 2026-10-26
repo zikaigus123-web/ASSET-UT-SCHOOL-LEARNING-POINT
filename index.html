@@ -43,10 +43,11 @@ th{background:#FAFAF7;text-align:left;padding:.7rem;font-size:.7rem;text-transfo
 .kpi{cursor:pointer;transition:.15s}.kpi:hover{box-shadow:0 8px 24px #0001;transform:translateY(-2px)}
 .md{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(680px,94vw);max-height:86vh;overflow:auto;background:#fff;border-radius:18px;padding:22px;z-index:60;box-shadow:0 30px 80px #0005}
 .lr{display:flex;align-items:center;gap:12px;padding:.65rem .4rem;border-top:1px solid var(--line);cursor:pointer}.lr:hover{background:#fffbea}.lr .bar{flex:1}
-#map{height:400px;border-radius:12px;z-index:1}.leg{display:flex;gap:16px;font-size:.78rem;color:var(--mut);margin-top:10px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;border:1px solid #1b1b1b}
+#map{background:#ececea;height:400px;border-radius:12px;z-index:1}.leg{display:flex;gap:16px;font-size:.78rem;color:var(--mut);margin-top:10px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;border:1px solid #1b1b1b}
 .mxw{max-height:72vh}.mxt th,.mxt td{white-space:nowrap}.mxt .sk{position:sticky;left:0;background:#fff;z-index:2;min-width:230px}.mxt th.sk{background:#FAFAF7;z-index:3}
 td.mx{text-align:center;font-weight:800;min-width:46px;border-left:1px solid var(--line)}td.mp{background:#fff3cf;color:#8a6200}td.mr{background:#fdecec;color:#a52a2a}.mxe td.mx{cursor:pointer}.mxe td.mx:hover{outline:2px solid var(--ut);outline-offset:-2px}
 tr.cg td{background:var(--ink);color:var(--ut);font-weight:700;font-size:.75rem;text-transform:uppercase}
+.leaflet-tile-pane{filter:grayscale(1) contrast(.88) brightness(1.08)}
 @media(max-width:900px){.login{grid-template-columns:1fr}.hero{display:none}.side{transform:translateX(-100%)}.side.open{transform:none}.main{margin-left:0}.burger{display:inline-flex}.grid2,.grid3{grid-template-columns:1fr}.content{padding:16px}}
 </style></head><body><div id="root"></div>
 <script>
@@ -60,7 +61,7 @@ const demo=!SUPABASE_URL, sb=demo?null:supabase.createClient(SUPABASE_URL,SUPABA
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const nf=n=>Number(n||0).toLocaleString('id-ID'), rp=n=>n>=1e9?'Rp '+(n/1e9).toLocaleString('id-ID',{maximumFractionDigits:2})+' M':'Rp '+(n/1e6).toLocaleString('id-ID',{maximumFractionDigits:1})+' jt';
 const st={user:null,view:'dashboard',cls:'',charts:[],pg:{}};
-const NAV=[['dashboard','Dashboard','ph-squares-four'],['lp','Learning Point','ph-map-pin'],['matrix','Facility Assessment Matrix','ph-grid-nine'],['assets','Aset Register','ph-package'],['gap','Gap Standar','ph-chart-bar-horizontal'],['import','Import Data','ph-upload-simple'],['review','Review Mapping','ph-magic-wand'],['standards','Standar Kelas','ph-sliders-horizontal'],['users','Manajemen User','ph-users']];
+const NAV=[['dashboard','Dashboard','ph-squares-four'],['lp','Learning Point','ph-map-pin'],['assets','Aset Register','ph-package'],['gap','Gap Standar','ph-chart-bar-horizontal'],['import','Import Data','ph-upload-simple'],['review','Review Mapping','ph-magic-wand'],['standards','Standar Kelas','ph-sliders-horizontal'],['users','Manajemen User','ph-users']];
 const ttl=Object.fromEntries(NAV.map(n=>[n[0],n[1]]));
 const rcls=v=>v>=80?'b-g':v>=40?'b-y':'b-r', condB=c=>/^Rusak/.test(c)?'b-r':c==='Belum ada History'?'b-n':'b-g';
 
@@ -91,7 +92,7 @@ $('#lo').onclick=async()=>{if(!demo)await sb.auth.signOut();st.user=null;login()
 async function go(v){if(!ttl[v])v='dashboard';st.view=v;location.hash=v;$('#side').classList.remove('open');
 document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('#ht').textContent=ttl[v];
 st.charts.forEach(c=>c.destroy());st.charts=[];if(st.map){st.map.remove();st.map=null}$('#ct').innerHTML='<div class="empty">Memuat…</div>';
-try{await({dashboard:dash,lp:lpView,matrix:matrixView,import:importView,users:usersView,standards:standardsView,assets:()=>pager('assets'),gap:gapView,review:reviewView}[v])()}catch(e){$('#ct').innerHTML=`<div class="card empty">Gagal memuat data: ${esc(e.message||e)}<br><small>Pastikan 01_schema.sql dan 02_seed_data.sql sudah dijalankan.</small></div>`}}
+try{await({dashboard:dash,lp:lpView,import:importView,users:usersView,standards:standardsView,assets:()=>pager('assets'),gap:gapView,review:reviewView}[v])()}catch(e){$('#ct').innerHTML=`<div class="card empty">Gagal memuat data: ${esc(e.message||e)}<br><small>Pastikan 01_schema.sql dan 02_seed_data.sql sudah dijalankan.</small></div>`}}
 
 async function getLP(){if(demo)return LP;const {data,error}=await sb.from('v_lp_live').select('*').order('name');if(error)throw error;
 return data.map(r=>({code:r.code,name:r.name,region:r.region,class:r.class,req:r.required_items,mp:r.matrix_present,rm:r.required_items?+(r.matrix_present*100/r.required_items).toFixed(1):0,rp:r.register_present,rr:r.required_items?+(r.ready_items*100/r.required_items).toFixed(1):0,miss:r.required_items-r.ready_items,extra:r.unmatrixed,dmg:r.damaged_assets,tot:r.total_assets}))}
@@ -175,21 +176,6 @@ document.querySelectorAll('select[data-f]').forEach(e=>e.onchange=()=>{s.f[e.dat
 $('#pv').onclick=()=>{s.page--;go(st.view)};$('#nx').onclick=()=>{s.page++;go(st.view)}}
 if(!demo)sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT'&&st.user){st.user=null;login()}});
 const needSb=()=>$('#ct').innerHTML='<div class="card empty"><i class="ph ph-plugs" style="font-size:40px;color:var(--ut-d)"></i><h3 style="margin-top:10px">Halaman ini membutuhkan Supabase</h3>Isi SUPABASE_URL dan SUPABASE_ANON_KEY di index.html.</div>';
-async function matrixView(){if(demo)return needSb();
-const [it,ce,lp]=await Promise.all([allRows('standard_items','*',['no']),allRows('matrix_cells','lp_code,item_no,present',['lp_code','item_no']),getLP()]);
-const M={},can=['admin','editor'].includes(st.user.role),f=st.mx=st.mx||{c:'',k:''},cats=[...new Set(it.map(i=>i.category))];ce.forEach(c=>M[c.lp_code+'|'+c.item_no]=c.present);
-const cols=lp.filter(l=>!f.k||l.class===f.k),rows=it.filter(i=>!f.c||i.category===f.c),req=(i,l)=>i['std_'+l.class.toLowerCase()]>0;
-const cls=(i,l)=>M[l.code+'|'+i.no]===1?'mp':req(i,l)?'mr':'',sym=(i,l)=>M[l.code+'|'+i.no]===1?'✓':req(i,l)?'✕':'';
-const pct=l=>{const r=it.filter(i=>req(i,l));return r.length?Math.round(r.filter(i=>M[l.code+'|'+i.no]===1).length*100/r.length):0};
-let last='';const body=rows.map(i=>{let h='';if(i.category!==last){last=i.category;h=`<tr class="cg"><td colspan="${cols.length+4}">${esc(i.category)}</td></tr>`}
-return h+`<tr><td class="sk">${i.no}. ${esc(i.item)}</td>${['a','b','c'].map(k=>`<td style="text-align:center">${i['std_'+k]?'●':''}</td>`).join('')}${cols.map(l=>`<td class="mx ${cls(i,l)}" data-k="${l.code}|${i.no}" title="${esc(l.name)} — ${esc(i.item)}">${sym(i,l)}</td>`).join('')}</tr>`}).join('');
-$('#ct').innerHTML=`<div class="filters" style="max-width:520px"><select class="inp" id="mc"><option value="">Semua kategori</option>${cats.map(c=>`<option ${f.c===c?'selected':''}>${esc(c)}</option>`).join('')}</select><select class="inp" id="mk"><option value="">Semua kelas</option>${['A','B','C'].map(k=>`<option value="${k}" ${f.k===k?'selected':''}>Kelas ${k}</option>`).join('')}</select></div>
-<div class="note">${can?'Klik sel untuk mengubah <b>ada ✓ / belum ada</b>. Perubahan langsung tersimpan.':'Mode lihat saja — hanya admin/editor yang bisa mengubah.'} &nbsp;<span class="badge b-y">✓ ada</span> <span class="badge b-r">✕ wajib tapi belum ada</span> · kosong = tidak wajib · ● = standar kelas A/B/C</div>
-<div class="tw mxw"><table class="mxt ${can?'mxe':''}"><thead><tr><th class="sk">Item standar</th><th>A</th><th>B</th><th>C</th>${cols.map(l=>`<th style="text-align:center" title="${esc(l.name)}">${l.code}<br><small>Kls ${l.class} · ${pct(l)}%</small></th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>`;
-$('#mc').onchange=e=>{f.c=e.target.value;go('matrix')};$('#mk').onchange=e=>{f.k=e.target.value;go('matrix')};
-document.querySelectorAll('td.mx').forEach(td=>td.onclick=async()=>{if(!can)return;const k=td.dataset.k,[c,n]=k.split('|'),v=M[k]===1?0:1,i=it.find(x=>x.no==n),l=lp.find(x=>x.code===c);
-const {error}=await sb.from('matrix_cells').upsert({lp_code:c,item_no:+n,present:v,updated_by:st.user.id},{onConflict:'lp_code,item_no'});if(error)return alert('Gagal menyimpan: '+error.message);M[k]=v;td.className='mx '+cls(i,l);td.textContent=sym(i,l)})}
-
 const AH=['Area','Entity','Klasifikasi','Asset Code','Serial Number','Asset Name','Employee','Kondisi','Date','Value','Residual Value','Kelompok','Area2','Kategori','item','Status Mapping','Keyakinan','Saran / Catatan','Flag Perbaikan'];
 const AMAP={'Entity':'entity','Area2':'lp_code','Area':'area','Klasifikasi':'classification','Asset Code':'asset_code','Serial Number':'serial_number','Asset Name':'asset_name','Employee':'employee','Kondisi':'condition','Date':'acquired_date','Value':'value','Residual Value':'residual_value','Kelompok':'kelompok','Kategori':'category','item':'item','Status Mapping':'mapping_status','Keyakinan':'confidence','Saran / Catatan':'note','Flag Perbaikan':'repair_flag'};
 function tplDownload(){const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([AH,['Jakarta','UT School','Fixed Asset (FA)','YFA02-XXXX-00001','SN-001','Contoh: Laptop Instruktur','Nama PIC','Baik Terpakai','2024-01-31',15000000,0,'YFA ...','JKT','Classroom & Digital Learning','Laptop Instruktur','Mapped','High','','']]),'Actual assesment');
