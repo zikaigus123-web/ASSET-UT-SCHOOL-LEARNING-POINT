@@ -49,6 +49,31 @@ td.mx{text-align:center;font-weight:800;min-width:46px;border-left:1px solid var
 tr.cg td{background:var(--ink);color:var(--ut);font-weight:700;font-size:.75rem;text-transform:uppercase}
 .leaflet-tile-pane{filter:grayscale(1) contrast(.88) brightness(1.08)}
 @media(max-width:900px){.login{grid-template-columns:1fr}.hero{display:none}.side{transform:translateX(-100%)}.side.open{transform:none}.main{margin-left:0}.burger{display:inline-flex}.grid2,.grid3{grid-template-columns:1fr}.content{padding:16px}}
+
+/* ===== UI refresh ===== */
+:root{--bg:#F5F5F2;--line:#ECECE6;--sh:0 1px 2px #0000000a,0 6px 20px #00000008;--r:16px}
+body{background:var(--bg);-webkit-font-smoothing:antialiased}
+.card{border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.btn{transition:.15s}.btn:active{transform:scale(.98)}.pri{box-shadow:0 2px 8px #fdb94040}.gh:hover{background:#fafaf7;border-color:#d9d9d2}
+.btn:focus-visible,.inp:focus-visible,.nav:focus-visible,.nav2:focus-visible{outline:3px solid #fdb91366;outline-offset:2px}
+.side{background:linear-gradient(180deg,#1d1d1d,#111);width:264px;transition:width .22s ease,transform .22s ease}
+.main{margin-left:264px;transition:margin-left .22s ease}.side nav{overflow:auto;padding:6px 12px}
+.nl{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:#6f6f69;font-weight:700;padding:16px 12px 6px;white-space:nowrap}
+.nav,.nav2{display:flex;gap:12px;align-items:center;width:100%;background:none;border:0;color:#a3a39c;padding:.72rem .9rem;border-radius:11px;cursor:pointer;font-weight:600;margin-bottom:2px;white-space:nowrap;transition:.15s}
+.nav:hover,.nav2:hover{background:#ffffff12;color:#fff}.nav.on{background:linear-gradient(90deg,#fdb9402b,#fdb94008);color:var(--ut)}.nav i,.nav2 i{font-size:20px;flex:none;transition:transform .22s}
+.top{background:#ffffffd9;border-bottom:1px solid var(--line);padding:12px 28px}.top h2{font-size:1.05rem;line-height:1.25}.top h2 small{display:block;font-size:.74rem;font-weight:500;color:var(--mut);margin-top:1px}
+.burger{display:inline-flex!important;padding:.5rem .65rem}.content{max-width:1500px}
+.content>*{animation:rise .28s ease both}@keyframes rise{from{opacity:0;transform:translateY(6px)}}
+.kpi{padding:18px 18px 16px 22px}.kpi b{font-size:1.9rem;letter-spacing:-.02em}.kic{position:absolute;right:16px;top:16px;width:36px;height:36px;border-radius:10px;background:#fff3cf;color:#B27B00;display:grid;place-items:center;font-size:1.15rem}
+.tw{border-radius:var(--r);box-shadow:var(--sh);border-color:var(--line)}th{background:#FAFAF7;letter-spacing:.05em;font-size:.67rem}td{padding:.7rem .8rem}tbody tr:hover td{background:#FFFDF3}
+.filters .inp,.inp{border-radius:11px}.md{border-radius:20px}.ov{backdrop-filter:blur(2px)}.drawer{border-radius:20px 0 0 20px}
+.skl{border-radius:var(--r);background:linear-gradient(90deg,#ececE6 25%,#f6f6f2 37%,#ececE6 63%);background-size:400% 100%;animation:shim 1.2s infinite}@keyframes shim{0%{background-position:100% 0}100%{background-position:0 0}}
+#ts{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;z-index:100}.toast{background:#1b1b1b;color:#fff;padding:.8rem 1rem;border-radius:12px;font-size:.88rem;font-weight:600;box-shadow:0 10px 30px #0004;border-left:4px solid var(--ut);max-width:360px;animation:rise .2s both;transition:.3s}.toast.out{opacity:0;transform:translateY(6px)}
+.eye{position:absolute;right:12px;bottom:11px;cursor:pointer;color:var(--mut);font-size:1.15rem}.lform .mark{box-shadow:0 6px 18px #fdb9404d}
+#sbk{display:none;position:fixed;inset:0;background:#0006;z-index:39}.side.open+#sbk{display:block}
+@media(min-width:901px){.app.col .side{width:76px}.app.col .main{margin-left:76px}.app.col .nt,.app.col .nl,.app.col .lt,.app.col .ui{display:none}
+.app.col .nav,.app.col .nav2{justify-content:center;padding:.8rem 0}.app.col .side .logo{justify-content:center;padding:22px 0}.app.col .user{flex-direction:column;padding:14px 0;gap:10px}.app.col #cl i{transform:rotate(180deg)}}
+@media(max-width:900px){.main{margin-left:0}.side{width:264px}.top{padding:12px 16px}}
 </style></head><body><div id="root"></div>
 <script>
 // ===== CONFIG: isi dengan project Supabase Anda (Settings > API). Kosongkan = mode DEMO =====
@@ -71,9 +96,9 @@ function login(err=''){$('#root').innerHTML=`<div class="login"><section class="
 <section class="lform"><form id="lf"><div class="mark" style="margin-bottom:18px">UT</div><h2 style="margin:0;font-size:28px">Masuk</h2><p style="color:var(--mut);margin:6px 0 22px">Gunakan akun yang diberikan administrator.</p>
 ${demo?'<div class="note">Mode DEMO: Supabase belum dikonfigurasi. Klik Masuk dengan isian apa saja.</div>':''}
 <label style="font-weight:600;font-size:.85rem">Username<input id="em" type="text" class="inp" style="margin:4px 0 14px" ${demo?'':'required'} autocomplete="username" autocapitalize="none" spellcheck="false"></label>
-<label style="font-weight:600;font-size:.85rem">Password<input id="pw" type="password" class="inp" style="margin-top:4px" ${demo?'':'required'} autocomplete="current-password"></label>
+<label style="font-weight:600;font-size:.85rem;display:block;position:relative">Password<span class="eye" id="ey"><i class="ph ph-eye"></i></span><input id="pw" type="password" class="inp" style="margin-top:4px" ${demo?'':'required'} autocomplete="current-password"></label>
 ${err?`<div class="err">${esc(err)}</div>`:''}<button class="btn pri" style="width:100%;margin-top:20px" id="lb">Masuk <i class="ph ph-arrow-right"></i></button></form></section></div>`;
-$('#lf').onsubmit=async e=>{e.preventDefault();const b=$('#lb');b.disabled=true;
+$('#ey').onclick=()=>{const p=$('#pw');p.type=p.type==='password'?'text':'password'};$('#lf').onsubmit=async e=>{e.preventDefault();const b=$('#lb');b.disabled=true;
 if(demo){st.user={name:'Demo User',role:'admin'};return start()}
 const {error}=await sb.auth.signInWithPassword({email:$('#em').value.trim().toLowerCase()+'@utschool.local',password:$('#pw').value});
 if(error){return login('Username atau password salah.')}await boot()}}
@@ -83,15 +108,17 @@ const {data:p}=await sb.from('profiles').select('full_name,role,active,username'
 if(!p||p.active===false){await sb.auth.signOut();return login('Akun tidak aktif. Hubungi administrator.')}
 st.user={id:session.user.id,name:p?.full_name||p?.username||'User',role:p?.role||'viewer'};start()}
 function start(){shell();go(location.hash.slice(1)||'dashboard')}
-function shell(){const u=st.user;$('#root').innerHTML=`<div class="app"><aside class="side" id="side"><div class="logo"><div class="mark">UT</div><div>UT SCHOOL<br><small style="color:#9a9a93;font-weight:500">Infra Standard</small></div></div>
-<nav>${NAV.filter(n=>((n[0]!=='import'&&n[0]!=='review')||['admin','editor'].includes(u.role))&&((n[0]!=='users'&&n[0]!=='standards')||u.role==='admin')).map(n=>`<button class="nav" data-v="${n[0]}"><i class="ph ${n[2]}"></i>${n[1]}</button>`).join('')}</nav>
-<div class="user"><div class="av">${esc(u.name[0].toUpperCase())}</div><div style="flex:1;min-width:0"><div style="font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.name)}</div><small style="text-transform:capitalize">${esc(u.role)}</small></div><button class="btn" id="lo" title="Keluar" style="background:#ffffff14;color:#fff;padding:.5rem"><i class="ph ph-sign-out"></i></button></div></aside>
+const GRP={dashboard:'Ringkasan',lp:'Data',assets:'Data',gap:'Data',import:'Kelola',review:'Kelola',standards:'Admin',users:'Admin'},SUB={dashboard:'Ringkasan kesiapan infrastruktur seluruh Learning Point',lp:'Daftar Learning Point dan tingkat kesiapannya',assets:'Register aset dan kondisinya',gap:'Perbandingan standar, matrix, dan aset aktual',import:'Unggah data aset dari Excel',review:'Petakan nama aset ke item standar',standards:'Atur item wajib untuk setiap kelas',users:'Kelola akun dan hak akses'};
+function navHtml(u){let g='';return NAV.filter(n=>(!['import','review'].includes(n[0])||['admin','editor'].includes(u.role))&&(!['users','standards'].includes(n[0])||u.role==='admin')).map(n=>{const h=GRP[n[0]]!==g?`<div class="nl">${g=GRP[n[0]]}</div>`:'';return h+`<button class="nav" data-v="${n[0]}" title="${n[1]}"><i class="ph ${n[2]}"></i><span class="nt">${n[1]}</span></button>`}).join('')}
+function shell(){const u=st.user;let c=false;try{c=localStorage.getItem('sbc')==='1'}catch(e){}$('#root').innerHTML=`<div class="app${c?' col':''}" id="app"><aside class="side" id="side"><div class="logo"><div class="mark">UT</div><div class="lt">UT SCHOOL<br><small style="color:#9a9a93;font-weight:500">Infra Standard</small></div></div>
+<nav>${navHtml(u)}</nav>
+<div style="padding:0 12px 10px"><button class="nav2" id="cl" title="Ciutkan / perluas menu"><i class="ph ph-caret-double-left"></i><span class="nt">Ciutkan menu</span></button></div><div class="user"><div class="av">${esc(u.name[0].toUpperCase())}</div><div class="ui" style="flex:1;min-width:0"><div style="font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.name)}</div><small style="text-transform:capitalize">${esc(u.role)}</small></div><button class="btn" id="lo" title="Keluar" style="background:#ffffff14;color:#fff;padding:.5rem"><i class="ph ph-sign-out"></i></button></div></aside><div id="sbk"></div>
 <div class="main"><header class="top"><button class="btn gh burger" id="bg"><i class="ph ph-list"></i></button><h2 id="ht"></h2><span style="flex:1"></span>${demo?'<span class="badge b-o">DEMO</span>':'<span class="badge b-g">Supabase</span>'}</header><div class="content" id="ct"></div></div></div><div id="dr"></div>`;
-document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>go(b.dataset.v));$('#bg').onclick=()=>$('#side').classList.toggle('open');
+document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>go(b.dataset.v));const tg=()=>{if(matchMedia('(max-width:900px)').matches)$('#side').classList.toggle('open');else{const a=$('#app');a.classList.toggle('col');try{localStorage.setItem('sbc',a.classList.contains('col')?'1':'0')}catch(e){}}};$('#bg').onclick=tg;$('#cl').onclick=tg;$('#sbk').onclick=()=>$('#side').classList.remove('open');
 $('#lo').onclick=async()=>{if(!demo)await sb.auth.signOut();st.user=null;login()}}
 async function go(v){if(!ttl[v])v='dashboard';st.view=v;location.hash=v;$('#side').classList.remove('open');
-document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('#ht').textContent=ttl[v];
-st.charts.forEach(c=>c.destroy());st.charts=[];if(st.map){st.map.remove();st.map=null}$('#ct').innerHTML='<div class="empty">Memuat…</div>';
+document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('#ht').innerHTML=`${ttl[v]}<small>${SUB[v]||''}</small>`;
+st.charts.forEach(c=>c.destroy());st.charts=[];if(st.map){st.map.remove();st.map=null}$('#ct').innerHTML='<div class="skl" style="height:96px"></div><div class="skl" style="height:280px;margin-top:16px"></div>';
 try{await({dashboard:dash,lp:lpView,import:importView,users:usersView,standards:standardsView,assets:()=>pager('assets'),gap:gapView,review:reviewView}[v])()}catch(e){$('#ct').innerHTML=`<div class="card empty">Gagal memuat data: ${esc(e.message||e)}<br><small>Pastikan 01_schema.sql dan 02_seed_data.sql sudah dijalankan.</small></div>`}}
 
 async function getLP(){if(demo)return LP;const {data,error}=await sb.from('v_lp_live').select('*').order('name');if(error)throw error;
@@ -119,7 +146,7 @@ $('#ct').innerHTML=`<div class="filters" style="max-width:560px">${sel('fl','Sem
 <div class="card"><h3>5 LP dengan kesiapan terendah</h3>${low.map(l=>`<div style="margin:14px 0;cursor:pointer" data-lc="${l.code}"><div style="display:flex;justify-content:space-between;font-size:.85rem"><b>${esc(l.name)} <span class="badge b-n">Kelas ${l.class}</span></b><span>${l.rm}%</span></div><div class="bar" style="margin-top:6px"><i style="width:${l.rm}%;background:var(--bad)"></i></div></div>`).join('')}</div></div>
 <div class="card" style="margin-top:16px"><h3>Peta Learning Point <small style="color:var(--mut);font-weight:500">· ukuran = jumlah aset, warna = kesiapan matrix</small></h3><div id="map"></div><div class="leg"><span><i style="background:#2E9E5B"></i>≥ 80%</span><span><i style="background:#FDB913"></i>40–79%</span><span><i style="background:#D64545"></i>&lt; 40%</span></div></div>`;
 $('#fc').onchange=e=>{st.cls=e.target.value;go('dashboard')};$('#fl').onchange=e=>{st.lpf=e.target.value;go('dashboard')};
-document.querySelectorAll('.kpi').forEach(k=>k.onclick=()=>kpiModal(k.dataset.k,lps,{n,val}));
+document.querySelectorAll('.kpi').forEach(k=>k.onclick=()=>kpiModal(k.dataset.k,lps,{n,val}));const KI={lp:'ph-map-pin',rm:'ph-check-square',rr:'ph-clipboard-text',tot:'ph-package',dmg:'ph-warning'};document.querySelectorAll('.kpi').forEach(k=>k.insertAdjacentHTML('afterbegin',`<i class="ph ${KI[k.dataset.k]} kic"></i>`));
 document.querySelectorAll('[data-lc]').forEach(k=>k.onclick=()=>detail(lps.find(l=>l.code===k.dataset.lc)));
 const ax={grid:{color:'#eee'}},hv=(e,els)=>e.native.target.style.cursor=els.length?'pointer':'default';
 chart('#c1',{type:'bar',data:{labels:lps.map(l=>l.code),datasets:[{label:'Matrix (Facility Assessment)',data:lps.map(l=>l.rm),backgroundColor:'#FDB913',borderRadius:4},{label:'Register aktual',data:lps.map(l=>l.rr),backgroundColor:'#1B1B1B',borderRadius:4}]},options:{maintainAspectRatio:false,onHover:hv,onClick:(e,el)=>el.length&&detail(lps[el[0].index]),scales:{y:{max:100,...ax},x:{grid:{display:false}}},plugins:{legend:{position:'bottom'}}}});
@@ -234,10 +261,9 @@ $('#ct').innerHTML=`<div class="note">Nama aset di bawah belum dikenali kamus ma
 <div class="tw"><table><thead><tr><th>Nama aset (contoh)</th><th>Baris</th><th>LP</th><th>Saran</th><th style="min-width:280px">Item final</th></tr></thead><tbody>${qr.data.map((r,i)=>`<tr><td><b>${esc(r.example)}</b></td><td>${r.n}</td><td>${esc(r.lps)}</td><td style="max-width:260px;color:var(--mut)">${esc(r.suggestion||'–')}</td><td><input class="inp kw" placeholder="Kelompokkan nama mirip, mis: mikrometer, micrometer" style="margin-bottom:6px;font-size:.78rem"><select class="inp rv" data-i="${i}"><option value="">— pilih —</option>${byCat}${ns}</select></td></tr>`).join('')||'<tr><td colspan="5" class="empty">Semua aset sudah ter-mapping 🎉</td></tr>'}</tbody></table></div>`;
 document.querySelectorAll('select.rv').forEach(s=>s.onchange=async()=>{if(!s.value)return;const tr=s.closest('tr'),r=qr.data[s.dataset.i],[k,v]=s.value.split('|'),cat=k==='I'?it.find(x=>x.item===v).category:v,stt=k==='I'?'Mapped':'Non-Standard',itm=k==='I'?v:null,kws=tr.querySelector('.kw').value.split(',').map(x=>x.trim().toLowerCase()).filter(Boolean);
 if(kws.some(x=>x.length<3)){s.value='';return alert('Setiap kata kunci minimal 3 huruf')}
-if(kws.length){if(!kws.some(x=>r.name_key.includes(x))){s.value='';return alert('Kata kunci harus ada di nama aset ini.')}
-const hit=qr.data.filter(q=>kws.some(x=>q.name_key.includes(x)));if(!confirm(`Kata kunci "${kws.join(', ')}" cocok dengan ${hit.length} nama aset di antrian:\n${hit.slice(0,6).map(h=>'• '+h.example).join('\n')}${hit.length>6?'\n• …':''}\n\nSemuanya dipetakan ke "${v}" dan aturan disimpan untuk import berikutnya. Lanjutkan?`)){s.value='';return}}
+if(kws.length){const hit=qr.data.filter(q=>kws.some(x=>q.name_key.includes(x)));if(!confirm(`Kata kunci "${kws.join(', ')}" cocok dengan ${hit.length} nama aset di antrian:\n${hit.slice(0,6).map(h=>'• '+h.example).join('\n')}${hit.length>6?'\n• …':''}\n\nAset yang sedang Anda pilih ini juga dipetakan ke "${v}". Semua nama yang cocok dipetakan ke item yang sama dan aturan disimpan untuk import berikutnya. Lanjutkan?`)){s.value='';return}}
 s.disabled=true;
-if(kws.length){const {data,error}=await sb.rpc('apply_rule',{p_keywords:kws,p_item:itm,p_category:cat,p_status:stt});if(error){s.disabled=false;return alert(error.message)}alert(data+' aset dipetakan oleh aturan ini.');return go('review')}
+if(kws.length){const m1=await sb.rpc('apply_mapping',{p_name:r.example,p_item:itm,p_category:cat,p_status:stt});if(m1.error){s.disabled=false;return alert(m1.error.message)}const {data,error}=await sb.rpc('apply_rule',{p_keywords:kws,p_item:itm,p_category:cat,p_status:stt});if(error){s.disabled=false;return alert(error.message)}alert((m1.data+data)+' aset dipetakan.');return go('review')}
 const {data,error}=await sb.rpc('apply_mapping',{p_name:r.example,p_item:itm,p_category:cat,p_status:stt});if(error){s.disabled=false;return alert(error.message)}tr.style.opacity=.4;tr.querySelector('td:last-child').innerHTML=`<span class="badge b-g">Tersimpan · ${data} aset diperbarui</span>`});
 const {data:rl}=await sb.from('item_rules').select('*').order('id');
 if(rl&&rl.length){$('#ct').insertAdjacentHTML('beforeend',`<h3 style="margin:24px 0 10px">Aturan kelompok aktif</h3><div class="tw"><table><thead><tr><th>Kata kunci (nama mengandung salah satu)</th><th>Dipetakan ke</th><th></th></tr></thead><tbody>${rl.map(x=>`<tr><td>${x.keywords.map(k=>`<span class="badge b-y">${esc(k)}</span>`).join(' ')}</td><td><b>${esc(x.item||x.category)}</b> <small style="color:var(--mut)">${x.status}</small></td><td><button class="btn gh" data-rd="${x.id}" style="color:var(--bad)">Hapus aturan</button></td></tr>`).join('')}</tbody></table></div><p style="font-size:.8rem;color:var(--mut)">Menghapus aturan tidak membatalkan aset yang sudah terpetakan; hanya berhenti dipakai untuk import berikutnya.</p>`);
@@ -265,5 +291,7 @@ document.querySelectorAll('select[data-c]').forEach(s=>s.onchange=async()=>{s.di
 async function sxLog(){const [{data:lg,error},{data:pr}]=await Promise.all([sb.from('standard_changes').select('*').order('at',{ascending:false}).limit(150),sb.from('profiles').select('id,full_name,username')]);if(error)throw error;
 const nm=Object.fromEntries((pr||[]).map(p=>[p.id,p.username?'@'+p.username:p.full_name])),K={standar:'Standar item',item_ditambah:'Item ditambah',kelas_lp:'Kelas LP'};
 $('#sb').innerHTML=`<div class="tw"><table><thead><tr><th>Waktu</th><th>Oleh</th><th>Jenis</th><th>Target</th><th>Perubahan</th></tr></thead><tbody>${lg.map(r=>`<tr><td>${new Date(r.at).toLocaleString('id-ID')}</td><td>${esc(nm[r.by]||'–')}</td><td><span class="badge b-y">${K[r.kind]||r.kind}</span></td><td>${esc(r.target)}</td><td>${esc(r.field)}: ${r.old_value!=null?esc(r.old_value)+' → ':''}<b>${esc(r.new_value)}</b></td></tr>`).join('')||'<tr><td colspan="5" class="empty">Belum ada perubahan.</td></tr>'}</tbody></table></div>`}
+function toast(m){let c=$('#ts');if(!c){c=document.createElement('div');c.id='ts';document.body.appendChild(c)}const d=document.createElement('div');d.className='toast';d.textContent=m;c.appendChild(d);setTimeout(()=>d.classList.add('out'),3600);setTimeout(()=>d.remove(),4000)}
+window.alert=m=>toast(String(m));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#dr'))$('#dr').innerHTML=''});
 boot();
 </script></body></html>
